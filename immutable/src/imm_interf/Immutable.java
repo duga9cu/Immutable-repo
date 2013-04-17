@@ -19,6 +19,7 @@ public interface Immutable extends Serializable{
 	 * - the client then sends the object to validate to the server -
 	 * - the server then accept the client's object and pass it to a thread - 
 	 * - the serverThread checks using reflection and processors whether the object is really immutable - 
+	 * 
 	 * */
 	
 	List<Immutable> validateMyself ();
