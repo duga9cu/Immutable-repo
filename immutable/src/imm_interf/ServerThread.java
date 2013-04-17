@@ -198,7 +198,7 @@ public class ServerThread extends Thread {
 				}
 				try 
 				{
-					System.out.println("invocation of method" + mname);
+					System.out.println("invocation of method :" + mname);
 					m.setAccessible(true);
 					m.invoke(o, arguments );			
 					// Handle any exceptions thrown by method to be invoked.

@@ -23,7 +23,8 @@ public final class ImmutableImpl implements Immutable {
 	private final int fifthMember;
 	private final int sixthMember;
 	
-//	public DeepCopy d = new DeepCopy();
+//	public Builder b;
+	public void resetBuilder(Builder b) { b = new ImmutableImpl.Builder();}
 //	public void setmember(int val) {sixthMember=val;}
 
 	public static class Builder {
@@ -36,6 +37,11 @@ public final class ImmutableImpl implements Immutable {
 		private int fifthMember = 0;
 		private int sixthMember = 0;
 
+		public Builder() {
+			this.firstRequiredMember=0;
+			this.secondRequiredMember=0;
+		}
+		
 		public Builder(int firstRequiredMember, int secondRequiredMember) {
 			this.firstRequiredMember = firstRequiredMember;
 			this.secondRequiredMember = secondRequiredMember;
