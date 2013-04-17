@@ -21,10 +21,10 @@ public final class ImmutableImpl implements Immutable {
 	private final int thirdMember;
 	private final int fourthMember;
 	private final int fifthMember;
-	public  int sixthMember;
+	private final int sixthMember;
 	
 //	public DeepCopy d = new DeepCopy();
-	public void setmember(int val) {sixthMember=val;}
+//	public void setmember(int val) {sixthMember=val;}
 
 	public static class Builder {
 		// Required parameters
