@@ -36,7 +36,9 @@ public class Server {
 		
 		while(true){
 					
-			System.out.println("sono sospeso");
+			System.out.println("------------------------------------------------");
+			System.out.println("|					sono sospeso				|");
+			System.out.println("------------------------------------------------");
 			client = server.accept();
 			ServerThread s = new ServerThread(client, group, dSocket);
 			s.start();

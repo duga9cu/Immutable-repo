@@ -257,14 +257,14 @@ public class ServerThread extends Thread {
 			if (mbr instanceof Field)
 			{
 				System.out.format("  %s%n", ((Field)mbr).toGenericString());
-				//				if (!  
-				//						(((Field)mbr).toGenericString().contains("private") && 
-				//								(((Field)mbr).toGenericString().contains("final")))
-				//						)	
-				//				{
-				//					whyNotImmutable="every field must be declared as PRIVATE and FINAL";
-				//					return false;
-				//				}
+								if (!  
+										(((Field)mbr).toGenericString().contains("private") && 
+												(((Field)mbr).toGenericString().contains("final")))
+										)	
+								{
+									whyNotImmutable="every field must be declared as PRIVATE and FINAL";
+									return false;
+								}
 			}
 			else if (mbr instanceof Constructor)
 				System.out.format("  %s%n", ((Constructor)mbr).toGenericString());
@@ -326,5 +326,6 @@ public class ServerThread extends Thread {
 		} catch (IOException e) {
 		} catch (ClassNotFoundException e1) {
 		}
+		return;
 	}
 }
