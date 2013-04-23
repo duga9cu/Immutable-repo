@@ -201,6 +201,12 @@ public class ServerThread extends Thread {
 				{
 					if (!Definitions.SEND_IMMUTABLE) {
 						System.out.println("invocation of method :"+ mname);
+						System.out.println("with parameters :");
+						for (Object it:arguments)
+						{
+							System.out.println(it.toString());							
+						}
+						
 					}
 					m.setAccessible(true);
 					m.invoke(o, arguments );			

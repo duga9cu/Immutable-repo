@@ -33,7 +33,7 @@ public class Client {
 			//create an Immutable object to validate
 			Immutable clientObjImmutable = new ImmutableImpl.Builder(333, 333).
 					thirdMember(333).fourthMember(333).sixthMember(333).build().validateMyself();
-			Immutable clientObjNOTImmutable = new NotImmutableImpl(222,222).validateMyself();						
+			Immutable clientObjNOTImmutable = new NotImmutableImpl(222).validateMyself();						
 
 			//connect to server socket
 			client = new Socket(SHOST, SPORT);
