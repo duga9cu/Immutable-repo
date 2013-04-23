@@ -22,6 +22,6 @@ public interface Immutable extends Serializable{
 	 * 
 	 * */
 	
-	List<Immutable> validateMyself ();
+	Immutable validateMyself ();
 	
 }

@@ -25,7 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import definitions.Definitions;
+
+import imm_interf.DeepCopy;
+import imm_obj.Client;
+
 public class ServerThread extends Thread {
+
 
 	private final static Map<Class<?>, Object> defaultValues = 
 			new HashMap<Class<?>, Object>();
@@ -69,14 +75,14 @@ public class ServerThread extends Thread {
 	{
 		if (coupleClone.size() != 2) 
 		{
-			whyNotImmutable= " ERRORE! IL VALIDATOR VUOLE UNA COPPIA DI OGGETTI UGUALI";
+			err.println( " ERRORE! IL VALIDATOR VUOLE due(!) OGGETTI");
 			return false;
 		}
 		Object o = coupleClone.get(0);
 		Object oClone = coupleClone.get(1);
-		if (! o.equals(oClone))  
+		if (! areEquals(o,oClone))  
 		{
-			whyNotImmutable= " ERRORE! IL VALIDATOR VUOLE UNA COPPIA DI OGGETTI UGUALI";
+			err.println( " ERRORE! IL VALIDATOR VUOLE UNA COPPIA DI OGGETTI uguali (!)");
 			return false;
 		}
 
@@ -158,20 +164,15 @@ public class ServerThread extends Thread {
 		for (Method m : allMethods) 	//per ogni metodo
 		{
 			String mname = m.getName();
-			//			List<Class<?>> args = new ArrayList<Class<?>>();
-			//parametri del metodo
+
 			Class<?>[] argTypes = m.getParameterTypes();  
-			//			for (Class<?> arg : argTypes)  
-			//			{
-			//				args.add(arg);
-			//			}
+
 			if (Modifier.isPublic(m.getModifiers())) //se si tratta di un metodo pubblico...
 			{
-				//				Object[] arguments = args.toArray();
 				Object[] arguments = new Object[argTypes.length];
 				for (int i=0; i< argTypes.length; i++) //per ogni argomento .. lo inizializzo
 				{
-					Class<?> argom = argTypes[i];
+					Class<?> argom = argTypes[i]; //argomento attuale
 					if (!argom.isPrimitive())
 					{
 						try {
@@ -198,7 +199,9 @@ public class ServerThread extends Thread {
 				}
 				try 
 				{
-					System.out.println("invocation of method :" + mname);
+					if (!Definitions.SEND_IMMUTABLE) {
+						System.out.println("invocation of method :"+ mname);
+					}
 					m.setAccessible(true);
 					m.invoke(o, arguments );			
 					// Handle any exceptions thrown by method to be invoked.
@@ -216,23 +219,27 @@ public class ServerThread extends Thread {
 
 
 		//------------------------------------------------------------------------
-		System.out.format("controllo che i campi non siano cambiati...%n%n");
+		System.out.format("%ncontrollo che i campi non siano cambiati...%n%n");
 
-		/*
-		 * <debug>
-		 */
-		Field[] flds = c.getFields();
-		for	(Field f: flds)
-		{
-			System.out.println("il valore del campo pubblico " + f + " dell'oggetto modificato è : " +  f.get(o));
-			System.out.println("mentre quello dell'oggetto originale era : " +  f.get(oClone));
+		if (!Definitions.SEND_IMMUTABLE) {
+			/*
+			 * <debug>
+			 */
+			Field[] flds = c.getDeclaredFields();
+			for (Field f : flds) {
+				f.setAccessible(true);
+				System.out.println("il valore del campo pubblico " + f
+						+ " dell'oggetto modificato è : " + f.get(o));
+				System.out
+				.println("mentre quello dell'oggetto originale era : "
+						+ f.get(oClone));
+			}
+			/*
+			 *  <\debug>
+			 */
 		}
-		/*
-		 *  <\debug>
-		 */
-
-
-		if (! o.equals(oClone))  
+		//----------- final check -----------------------------------------------
+		if (! areEquals(o,oClone))  
 		{
 			whyNotImmutable= "some public methods can modify the object's fields";
 			return false;
@@ -257,14 +264,13 @@ public class ServerThread extends Thread {
 			if (mbr instanceof Field)
 			{
 				System.out.format("  %s%n", ((Field)mbr).toGenericString());
-								if (!  
-										(((Field)mbr).toGenericString().contains("private") && 
-												(((Field)mbr).toGenericString().contains("final")))
-										)	
-								{
-									whyNotImmutable="every field must be declared as PRIVATE and FINAL";
-									return false;
-								}
+				if (Definitions.SEND_IMMUTABLE) { //in the normal validation (not in the test mode)
+					if (!(((Field) mbr).toGenericString().contains("private") && (((Field) mbr)
+							.toGenericString().contains("final")))) {
+						whyNotImmutable = "every field must be declared as PRIVATE and FINAL";
+						return false;
+					}
+				}
 			}
 			else if (mbr instanceof Constructor)
 				System.out.format("  %s%n", ((Constructor)mbr).toGenericString());
@@ -288,41 +294,48 @@ public class ServerThread extends Thread {
 		System.out.format("%n");
 	}
 
+	private boolean areEquals(Object a, Object b) throws IllegalArgumentException, IllegalAccessException 
+	{
+		//se non sono della stessa classe
+		if (a.getClass() != b.getClass()) return false;
+
+		//se non hanno tutti i campi uguali
+		Class c = a.getClass();
+		Field[] flds = c.getDeclaredFields();
+		for	(Field f : flds) 
+		{
+			f.setAccessible(true);
+			if (!f.get(a).equals(f.get(b)))
+				return false;
+		}
+
+		return true;
+
+	}
 
 	public void run() {
 		try {
 			in = new ObjectInputStream(client.getInputStream());
-			int numberOfObjectToReceive = 2;
-			while (numberOfObjectToReceive-- != 0) {
-				received = in.readObject();
-				receivedClone = in.readObject();
-				List<Immutable> l = new ArrayList<Immutable>();
-				l.add((Immutable)received);
-				l.add((Immutable)receivedClone);
-//				if (received instanceof List<?> && 
-//						((List<?>) received).get(0) instanceof Immutable &&
-//						((List<?>) received).get(1) instanceof Immutable) 
-//				{
-//					received = (List<Immutable>) received;
-//				}
-//				else {
-//					whyNotImmutable = "il server deve ricevere una coppia di oggetti uguali contenuti in una List<Immutable>";
-//					return;
-//				}
-				try {					
-					boolean result = this.validate((List<Immutable>)l);	
-					System.out.println("the object validation resutl is : " + result + "!" );
-					if (result==false)
-						System.out.println("for the following reason: "+ whyNotImmutable);
 
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			received = in.readObject();
+			List<Immutable> l = new ArrayList<Immutable>();
+			l.add((Immutable)received);
+			l.add((Immutable) DeepCopy.copy(received));
+
+			try {					
+				boolean result = this.validate((List<Immutable>)l);	
+				System.out.println("the object validation resutl is : " + result + "!" );
+				if (result==false)
+					System.out.println("for the following reason: "+ whyNotImmutable);
+
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		} catch (IOException e) {
 		} catch (ClassNotFoundException e1) {
 		}

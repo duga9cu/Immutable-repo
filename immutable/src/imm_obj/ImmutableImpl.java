@@ -13,9 +13,6 @@ import imm_interf.*;
  */
 public final class ImmutableImpl implements Immutable {
 
-	/**
-	 * 
-	 */
 	private final int firstRequiredMember;
 	private final int secondRequiredMember;
 	private final int thirdMember;
@@ -23,10 +20,6 @@ public final class ImmutableImpl implements Immutable {
 	private final int fifthMember;
 	private final int sixthMember;
 	
-//	public Builder b;
-	public void resetBuilder(Builder b) { b = new ImmutableImpl.Builder();}
-//	public void setmember(int val) {sixthMember=val;}
-
 	public static class Builder {
 		// Required parameters
 		private final int firstRequiredMember;
@@ -90,10 +83,8 @@ public final class ImmutableImpl implements Immutable {
 	 * .lang.Object)
 	 */
 	@Override
-	public List<Immutable> validateMyself() {
-		List<Immutable> coupleCLone = new ArrayList<Immutable>();
-		coupleCLone.add(this);
-		coupleCLone.add(this);
-		return coupleCLone;
+	public Immutable validateMyself() {
+		
+		return this;
 	}
 }
