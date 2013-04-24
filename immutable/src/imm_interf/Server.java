@@ -6,6 +6,13 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
+/**
+ * The server class just wait for a client connection and pass it to a serverThread
+ * 
+ * @author Lorenzo Rotteglia
+ *
+ */
 public class Server {
 
 	final static int SPORT = 4000;
@@ -14,35 +21,36 @@ public class Server {
 	final static String DADDRESS = "228.5.6.7";
 	public static ServerSocket server;
 	public static Socket client;
-	
+
 	public static DatagramSocket dSocket;
 	public static InetAddress group;
-	
+
 	public static boolean accept() throws IOException, ClassNotFoundException{
 
-			return false;
+		return false;
 	}
-	
+
 	/**
+	 * 
 	 * @param args
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		
+
 		server = new ServerSocket(SPORT);
 		dSocket = new DatagramSocket(DSPORT);
 		group = InetAddress.getByName(DADDRESS);
-		
+
 		while(true){
-					
+
 			System.out.println("------------------------------------------------");
 			System.out.println("		sono sospeso							");
 			System.out.println("------------------------------------------------");
 			client = server.accept();
 			ServerThread s = new ServerThread(client, group, dSocket);
 			s.start();
-			
+
 		}
 
 	}

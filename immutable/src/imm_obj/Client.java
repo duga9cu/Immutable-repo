@@ -11,7 +11,15 @@ import java.util.List;
 
 import definitions.Definitions;
 
-
+/**
+ * This class is a client which do the following:
+ * 		- instantiate two objects with dummy values: one is immutable, the other is not.
+ * 		- connect to the server.
+ * 		- depending on the option chosed in Definitions.java sends the first or the second object to the server
+ * 			for the validation.
+ * 
+ * @author Lorenzo Rotteglia
+ */
 public class Client {
 	
 	final static int SPORT = 4000;

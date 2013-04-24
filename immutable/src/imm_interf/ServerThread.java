@@ -30,6 +30,10 @@ import definitions.Definitions;
 import imm_interf.DeepCopy;
 import imm_obj.Client;
 
+
+/*
+ * This class is doing the heavy duty work of validating the object
+ */
 public class ServerThread extends Thread {
 
 
@@ -71,7 +75,19 @@ public class ServerThread extends Thread {
 		this.dSocket = dSocket;
 	}
 
-	public boolean validate(List<Immutable> coupleClone) throws InstantiationException, IllegalAccessException
+	
+	
+	/**
+	 * This is the method where the validation of the object is implemented
+	 * 
+	 * @param coupleClone	is a list of two Immutable object created by the serverThread itself in the run() method.
+	 * 						It contains two identical object: 
+	 * 							- the first one is the original object passed on by the client
+	 * 							- the second one is a deep copy of the previous object obtained thanks to the DeepCopy class
+	 * @return				<code>true</code> if the object passed on by the client is really Immutable
+	 * 	 					<code>false</code> if it is not
+	 */
+	private boolean validate(List<Immutable> coupleClone) throws InstantiationException, IllegalAccessException
 	{
 		if (coupleClone.size() != 2) 
 		{
@@ -319,6 +335,10 @@ public class ServerThread extends Thread {
 
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
 		try {
 			in = new ObjectInputStream(client.getInputStream());

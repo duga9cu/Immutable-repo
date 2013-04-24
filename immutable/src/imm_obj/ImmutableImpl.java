@@ -8,6 +8,8 @@ import java.util.List;
 import imm_interf.*;
 
 /**
+ * This class is just an example of an immutable object implemented with the builder pattern.
+ * 
  * @author lorenzo rotteglia
  * 
  */
@@ -75,12 +77,11 @@ public final class ImmutableImpl implements Immutable {
 		sixthMember = builder.fifthMember;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * it.lorenzo.rotteglia.immutable_interface.Immutable#validateMyself(java
-	 * .lang.Object)
+	 * imm_interf.Immutable#validateMyself()
 	 */
 	@Override
 	public Immutable validateMyself() {

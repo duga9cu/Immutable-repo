@@ -8,20 +8,18 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * This is an Interface to be implemented by every object claiming to be immutable to the server
+ * 
  * @author lorenzo rotteglia
  *
  */
 public interface Immutable extends Serializable{
-	
-	/*
-	 * - the client instantiate a class which implements the interface Immutable -
-	 * - the implementation of the function validateMyself must return a List<Immutable> object containing two copies of the object itself -
-	 * - the client then sends the object to validate to the server -
-	 * - the server then accept the client's object and pass it to a thread - 
-	 * - the serverThread checks using reflection and processors whether the object is really immutable - 
+
+	/**
+	 * This function must be contained in every Immutable object and should just return the Immutable object itself
 	 * 
-	 * */
-	
-	Immutable validateMyself ();
-	
+	 * @return <code> this </code>
+	 */
+	public Immutable validateMyself ();
+
 }
