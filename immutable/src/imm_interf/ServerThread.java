@@ -234,7 +234,7 @@ public class ServerThread extends Thread {
 			Field[] flds = c.getDeclaredFields();
 			for (Field f : flds) {
 				f.setAccessible(true);
-				System.out.println("il valore del campo pubblico " + f
+				System.out.println("il valore del campo " + f
 						+ " dell'oggetto modificato è : " + f.get(o));
 				System.out
 				.println("mentre quello dell'oggetto originale era : "
