@@ -31,7 +31,7 @@ import imm_interf.DeepCopy;
 import imm_obj.Client;
 
 
-/*
+/**
  * This class is doing the heavy duty work of validating the object
  */
 public class ServerThread extends Thread {
